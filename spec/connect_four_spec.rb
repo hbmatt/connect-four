@@ -18,7 +18,7 @@ describe Board do
 
   describe '#display_board' do
     it 'creates a visual of the board' do
-      visual = "| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n+---------------------------+"
+      visual = "\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n+---------------------------+"
       expect(board.display_board).to eq(puts visual)
     end
   end
@@ -39,7 +39,7 @@ describe Player do
   describe '#make_move' do
     it 'returns column input from player' do
       allow(player).to receive(:gets) { '5' }
-      expect(player.make_move(board.grid)).to eq(5)
+      expect(player.make_move(board.grid)).to eq(4)
     end
 
     it 'outputs error if move invaid' do
@@ -154,33 +154,36 @@ describe Game do
   end
 
   describe '#start_game' do
-    it 'calls #end_game when winning moves are found' do
-      
+    it 'calls #end_game when the board is full' do
+      visual = "\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n+---------------------------+"
+      game.move_counter = 43
+      allow(game).to receive(:get_players).and_return(true)
+      expect{game.start_game}.to output(puts visual + "\nGame over! It's a draw!").to_stdout
     end
   end
 
   describe "#end_game" do
     it 'declares a winner when there is one' do
       game.player1.name = 'Player 1'
-      expect{game.end_game(game.player1)}.to output("Game over! Player 1 wins!\n").to_stdout
+      allow(game).to receive(:restart).and_return(false)
+      expect{game.end_game(game.player1)}.to output("\nGame over! Player 1 wins!\n").to_stdout
     end
 
     it 'declares a draw with no winner' do
-      expect{game.end_game}.to output("Game over! It's a draw!\n").to_stdout
+      allow(game).to receive(:restart).and_return(false)
+      expect{game.end_game}.to output("\nGame over! It's a draw!\n").to_stdout
     end
   end
 
   describe '#restart' do
-    it 'calls #start_game when player answers Y' do
-      
-    end
-
     it 'exits program when player answers N' do
-      
+      allow(game).to receive(:gets).and_return('N')
+      expect(game.restart).to eq(exit)
     end
 
     it "returns error when player doesn't choose Y or N" do
-      
+      allow(game).to receive(:gets).and_return('yes', 'N')
+      expect{game.restart}.to output("\nPlay again? [Y/N]\nPlease enter Y or N:\n\nGoodbye!\n").to_stdout
     end
   end
 end

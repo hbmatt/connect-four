@@ -37,7 +37,7 @@ class Board
     end
     display += '+---------------------------+'
 
-    puts display
+    puts "\n\n" + display
   end
 
   def mark_board(position, mark)

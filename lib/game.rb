@@ -9,9 +9,10 @@ class Game
   end
 
   def start_game
-    puts "Let's Play Connect Four!\n"
+    puts "\nLet's Play Connect Four!\n"
     get_players
 
+    @board.make_board
     @board.display_board
 
     until @move_counter > 42
@@ -28,25 +29,44 @@ class Game
     end_game
   end
 
-  def end_game(player = nil)
-    return puts "Game over! It's a draw!" if player.nil?
+  def end_game(player = 'draw')
+    return puts "\nGame over! It's a draw!" if player == 'draw'
 
-    puts "Game over! #{player.name} wins!"
+    puts "\nGame over! #{player.name} wins!"
+
+    restart()
+  end
+
+  def restart
+    puts "\nPlay again? [Y/N]"
+    answer = gets.chomp.upcase
+
+    unless answer == 'Y' || answer == 'N'
+      puts "Please enter Y or N:"
+      answer = gets.chomp.upcase
+    end
+
+    if answer == 'Y'
+      Game.new.start_game
+    else
+      puts "\nGoodbye!"
+      exit
+    end
   end
 
   def get_players
-    puts 'Player 1, enter your name:'
+    puts "\nPlayer 1, enter your name:"
     @player1.name = gets.chomp
-    puts 'Player 2, enter your name:'
+    puts "\nPlayer 2, enter your name:"
     @player2.name = gets.chomp
   end
 
   def choose_player_turn
     if @move_counter.odd?
-      puts "Player 1's turn"
+      puts "\nPlayer 1's turn"
       @player1
     elsif @move_counter.even?
-      puts "Player 2's turn"
+      puts "\nPlayer 2's turn"
       @player2
     end
   end
